@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block body %}
+{% include "topbar.html" %}
+<div class="shell">
+  {% include "sidebar.html" %}
+  <main class="content">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}<p class="notice {{ category }}" role="status">{{ message }}</p>{% endfor %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+</div>
+<div class="confirm-modal" id="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="confirm-modal-title" aria-describedby="confirm-modal-message" hidden>
+  <div class="confirm-modal-backdrop" data-confirm-cancel></div>
+  <div class="confirm-modal-card">
+    <h2 id="confirm-modal-title">Please confirm</h2>
+    <p id="confirm-modal-message">Are you sure?</p>
+    <div class="confirm-modal-actions">
+      <button type="button" class="btn outline" data-confirm-cancel>Cancel</button>
+      <button type="button" class="btn confirm-modal-accept" id="confirm-modal-accept">Confirm</button>
+    </div>
+  </div>
+</div>
+{% endblock %}

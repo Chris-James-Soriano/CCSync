@@ -1,0 +1,126 @@
+{% extends "app_layout.html" %}
+{% block title %}Import | CCSync{% endblock %}
+{% block content %}
+<h1>Import</h1>
+
+{% if results %}
+<section class="card import-results" aria-label="Import results">
+  <h2>Import results — {{ results.kind }}</h2>
+  <ul class="import-result-stats">
+    <li><strong>{{ results.imported }}</strong> imported</li>
+    <li><strong>{{ results.skipped }}</strong> duplicate(s) skipped</li>
+    <li><strong>{{ results.errors|length }}</strong> row error(s)</li>
+  </ul>
+  {% if results.subjects %}
+  <h3>Embedded subjects</h3>
+  <ul class="import-result-stats">
+    <li><strong>{{ results.subjects.imported }}</strong> imported</li>
+    <li><strong>{{ results.subjects.skipped }}</strong> duplicate(s) skipped</li>
+    <li><strong>{{ results.subjects.errors|length }}</strong> row error(s)</li>
+  </ul>
+  {% if results.subjects.skipped_rows %}
+  <ul class="import-row-list">
+    {% for item in results.subjects.skipped_rows[:20] %}<li>{{ item }}</li>{% endfor %}
+    {% if results.subjects.skipped_rows|length > 20 %}<li>… and {{ results.subjects.skipped_rows|length - 20 }} more</li>{% endif %}
+  </ul>
+  {% endif %}
+  {% if results.subjects.errors %}
+  <ul class="import-row-list import-row-errors">
+    {% for item in results.subjects.errors[:20] %}<li>{{ item }}</li>{% endfor %}
+    {% if results.subjects.errors|length > 20 %}<li>… and {{ results.subjects.errors|length - 20 }} more</li>{% endif %}
+  </ul>
+  {% endif %}
+  {% endif %}
+  {% if results.skipped_rows %}
+  <h3>Skipped (already exist)</h3>
+  <ul class="import-row-list">
+    {% for item in results.skipped_rows[:20] %}<li>{{ item }}</li>{% endfor %}
+    {% if results.skipped_rows|length > 20 %}<li>… and {{ results.skipped_rows|length - 20 }} more</li>{% endif %}
+  </ul>
+  {% endif %}
+  {% if results.errors %}
+  <h3>Row errors</h3>
+  <ul class="import-row-list import-row-errors">
+    {% for item in results.errors[:20] %}<li>{{ item }}</li>{% endfor %}
+    {% if results.errors|length > 20 %}<li>… and {{ results.errors|length - 20 }} more</li>{% endif %}
+  </ul>
+  <p class="import-note">Fix the rows above in your spreadsheet and upload it again — imported records will be skipped as duplicates.</p>
+  {% endif %}
+</section>
+{% endif %}
+
+<div class="import-grid">
+  <section class="card import-card" aria-labelledby="import-sections-title">
+    <h2 id="import-sections-title">Import sections</h2>
+    <table class="import-table">
+      <thead><tr><th>Column</th><th>Required</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Name</td><td>Yes</td><td>e.g. BSCS 1A, unique</td></tr>
+        <tr><td>Year</td><td>Yes</td><td>1, 2, 3, or 4</td></tr>
+        <tr><td>Program</td><td>Yes</td><td>BSCS or BSIT</td></tr>
+      </tbody>
+    </table>
+    <div class="import-actions">
+      <a class="btn outline" href="{{ url_for('dean.import_template', kind='sections') }}">Download template (.xlsx)</a>
+    </div>
+    <form method="post" action="{{ url_for('dean.import_page') }}" enctype="multipart/form-data" class="import-form">
+      <input type="hidden" name="kind" value="sections">
+      <label class="import-file-label">Sections file
+        <input type="file" name="file" accept=".xlsx" required>
+      </label>
+      <button class="btn orange" type="submit">Import sections</button>
+    </form>
+  </section>
+
+  <section class="card import-card" aria-labelledby="import-rooms-title">
+    <h2 id="import-rooms-title">Import rooms</h2>
+    <table class="import-table">
+      <thead><tr><th>Column</th><th>Required</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Name</td><td>Yes</td><td>e.g. Room 301, unique; “Online” is reserved</td></tr>
+        <tr><td>Type</td><td>Yes</td><td>Lecture or Laboratory</td></tr>
+        <tr><td>Seats</td><td>Yes</td><td>Positive whole number</td></tr>
+      </tbody>
+    </table>
+    <div class="import-actions">
+      <a class="btn outline" href="{{ url_for('dean.import_template', kind='rooms') }}">Download template (.xlsx)</a>
+    </div>
+    <form method="post" action="{{ url_for('dean.import_page') }}" enctype="multipart/form-data" class="import-form">
+      <input type="hidden" name="kind" value="rooms">
+      <label class="import-file-label">Rooms file
+        <input type="file" name="file" accept=".xlsx" required>
+      </label>
+      <button class="btn orange" type="submit">Import rooms</button>
+    </form>
+  </section>
+
+  <section class="card import-card" aria-labelledby="import-faculty-title">
+    <h2 id="import-faculty-title">Import faculty</h2>
+    <table class="import-table">
+      <thead><tr><th>Column</th><th>Required</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Name</td><td>Yes</td><td>Full name, unique; existing faculty are not duplicated</td></tr>
+        <tr><td>Status</td><td>No</td><td>Active (default) or Inactive</td></tr>
+        <tr><td>Weekly Capacity</td><td>No</td><td>Hours per week, default 40</td></tr>
+        <tr><td>Subject Code</td><td>No</td><td>One subject per row — repeat the faculty on extra rows; unique</td></tr>
+        <tr><td>Subject Title</td><td>No</td><td>Required when Subject Code is filled</td></tr>
+        <tr><td>Units</td><td>No</td><td>Required when Subject Code is filled · 2, 3, or 5</td></tr>
+        <tr><td>Room Type</td><td>No</td><td>Required when Subject Code is filled · Lecture, Laboratory, or Both</td></tr>
+        <tr><td>Delivery</td><td>No</td><td>In-person (default) or Online; Online can’t have a Fixed Room</td></tr>
+        <tr><td>Fixed Room</td><td>No</td><td>Existing room name; subject always scheduled there (not for Online or Both)</td></tr>
+      </tbody>
+    </table>
+    <div class="import-actions">
+      <a class="btn outline" href="{{ url_for('dean.import_template', kind='faculty') }}">Download template (.xlsx)</a>
+    </div>
+    <form method="post" action="{{ url_for('dean.import_page') }}" enctype="multipart/form-data" class="import-form">
+      <input type="hidden" name="kind" value="faculty">
+      <label class="import-file-label">Faculty file
+        <input type="file" name="file" accept=".xlsx" required>
+      </label>
+      <p class="import-note">Subject columns are optional — leave them blank to import faculty only. Existing faculty with the same name are not duplicated; their subjects are added to them.</p>
+      <button class="btn orange" type="submit">Import faculty</button>
+    </form>
+  </section>
+</div>
+{% endblock %}

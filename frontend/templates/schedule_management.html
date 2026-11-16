@@ -1,0 +1,38 @@
+<section class="schedule-management">
+  <div class="schedule-management-heading">
+    <div><h2>Scheduled classes</h2></div>
+    <input type="search" id="schedule-filter" class="schedule-filter" placeholder="Filter by course, section, or instructor…" aria-label="Filter scheduled classes">
+  </div>
+  <div class="schedule-rows" id="schedule-rows">
+  {% for schedule in schedules %}
+  {% if not schedule.is_nstp %}
+  <form class="schedule-row{{ ' is-conflict' if schedule.status == 'conflict' else '' }}" method="post" action="{{ url_for('dean.edit_schedule', schedule_id=schedule.id) }}">
+    <div class="schedule-row-course"><strong>{{ schedule.course }} · {{ schedule.section }}</strong><span>{{ schedule.instructor }} · {{ schedule.units }} units</span>{% if schedule.status == 'conflict' %}<span class="tag conflict">Conflict</span>{% endif %}</div>
+    <label>Day<select name="day">{% for option in days %}<option value="{{ option }}" {{ 'selected' if option == schedule.day }}>{{ option }}</option>{% endfor %}</select></label>
+    <label>Start<select name="start">{% for value, label in start_options %}<option value="{{ value }}" {{ 'selected' if value == schedule.start }}>{{ label }}</option>{% endfor %}</select></label>
+    <label>End<select name="end">{% for value, label in end_options %}<option value="{{ value }}" {{ 'selected' if value == schedule.end }}>{{ label }}</option>{% endfor %}</select></label>
+    <label>Room / mode<select name="room_id">{% for room in all_rooms %}<option value="{{ room.id }}" {{ 'selected' if room.id == schedule.room_id }}>{{ room.name }}{% if room.name != 'Online' %} · {{ room.type }}{% endif %}</option>{% endfor %}</select></label>
+    <input type="hidden" name="subject_id" value="{{ schedule.subject_id }}">
+    <input type="hidden" name="section_id" value="{{ schedule.section_id }}">
+    <input type="hidden" name="session_type" value="{{ schedule.session_type }}">
+    <button class="btn" type="submit" aria-label="Save {{ schedule.course }} for {{ schedule.section }}">Save</button>
+  </form>
+  {% endif %}
+  {% else %}
+  <p class="empty-state">No scheduled classes yet. Use automatic generation to build the first schedule.</p>
+  {% endfor %}
+  </div>
+</section>
+<script>
+  (function () {
+    var input = document.getElementById("schedule-filter");
+    var rows = document.getElementById("schedule-rows");
+    if (!input || !rows) return;
+    input.addEventListener("input", function () {
+      var query = input.value.trim().toLowerCase();
+      rows.querySelectorAll(".schedule-row").forEach(function (row) {
+        row.style.display = !query || row.textContent.toLowerCase().includes(query) ? "" : "none";
+      });
+    });
+  })();
+</script>

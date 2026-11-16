@@ -1,0 +1,25 @@
+{% extends "app_layout.html" %}
+{% block title %}Rooms & Labs | CCSync{% endblock %}
+{% block content %}
+<h1>Rooms & Labs</h1>
+{% if can_manage %}
+<section class="card manage-form">
+	<h2>Add room</h2>
+	<form method="post" class="inline-form">
+		<label>Room name <input name="name" type="text" required></label>
+		<label>Classification
+			<select name="type" required><option>Lecture</option><option>Laboratory</option></select>
+		</label>
+		<label>Seats <input name="seats" type="number" min="1" value="40" required></label>
+		<button class="btn orange" type="submit">Add room</button>
+	</form>
+</section>
+{% endif %}
+<div class="room-list">
+	{% for r in rooms %}
+	<article class="card room-card">
+		<strong>{{ r.name }}</strong><span>{{ r.type }} room</span><span>{{ r.seats }} seats</span>
+	</article>
+	{% endfor %}
+</div>
+{% endblock %}

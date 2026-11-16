@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CCSync — Vue</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Outfit:wght@600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#2a1638;--surface:#3d1f52;--surface-2:#4a265e;--accent:#e07b2a;--accent-2:#8e3ecf;--text:#f3e8ff;--text-dim:#cbb8d6;--radius:18px;--shadow:0 10px 40px rgba(0,0,0,.35);}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.35}
+header{display:flex;align-items:center;justify-content:space-between;padding:18px 28px;background:linear-gradient(90deg,#2a1638,#3d1f52);border-bottom:1px solid rgba(255,255,255,.06)}
+.logo{font-family:'Outfit',sans-serif;font-weight:800;font-size:22px;letter-spacing:-.5px}
+.logo .c1{color:var(--accent)}.logo .c2{color:#fff}.logo .y{color:var(--accent-2)}.logo .dot{color:var(--accent)}
+.search{background:#3d1f52;border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:8px 16px;color:var(--text);width:320px;font-size:14px}
+.shell{display:grid;grid-template-columns:240px 1fr;min-height:calc(100vh - 72px)}
+.sidebar{background:#2a1638;border-right:1px solid rgba(255,255,255,.06);padding:24px 16px}
+.sidebar a{display:block;padding:10px 14px;border-radius:10px;color:var(--text-dim);text-decoration:none;font-weight:500;font-size:14px;margin-bottom:4px;transition:.15s}
+.sidebar a:hover,.sidebar a.active{background:rgba(142,62,207,.15);color:#fff}
+main{padding:28px}
+h1{font-family:'Outfit',sans-serif;font-size:28px;margin-bottom:6px}
+.subtitle{color:var(--text-dim);margin-bottom:22px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;margin-bottom:28px}
+.card{background:var(--surface);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+.card h3{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--text-dim);margin-bottom:8px}
+.card .big{font-family:'Outfit',sans-serif;font-size:32px;font-weight:800;color:#fff}
+.card .label{font-size:12px;color:var(--text-dim);margin-top:4px}
+.timeline{background:var(--surface);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+.timeline table{width:100%;border-collapse:collapse;font-size:13px}
+.timeline th{color:var(--text-dim);text-align:left;padding:8px 6px;border-bottom:1px solid rgba(255,255,255,.1);font-weight:600}
+.timeline td{padding:10px 6px;border-bottom:1px solid rgba(255,255,255,.06)}
+.tag{display:inline-block;padding:3px 8px;border-radius:999px;font-size:11px;font-weight:600}
+.tag.approved{background:#2a6e3e;color:#c8f0d6}.tag.conflict{background:#7a2e2e;color:#f0c8c8}.tag.draft{background:#5a3a7a;color:#e0c8f0}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo"><span class="c1">CC</span><span class="c2">S</span><span class="y">ync</span><span class="dot">.</span></div>
+  <button class="hamburger" onclick="document.body.classList.toggle('sidebar-collapsed')" aria-label="Toggle sidebar">☰</button>
+  <input class="search" placeholder="Search courses, rooms, instructors…" />
+  <div style="text-align:right;font-size:12px;color:var(--text-dim)">College of Computer Studies<br>Laguna State Polytechnic University</div>
+</header>
+<div class="shell">
+  <nav class="sidebar" aria-label="Primary">
+    <a href="#" class="active">My Schedule</a>
+    <a href="#">Create Schedule</a>
+    <a href="#">Room Availability</a>
+    <a href="#">Rooms &amp; Labs</a>
+    <a href="#">Faculty</a>
+    <a href="#">Export</a>
+    <hr style="border:0;border-top:1px solid rgba(255,255,255,.08);margin:12px 0">
+    <a href="#">Logout</a>
+  </nav>
+  <main>
+    <h1>My Schedule</h1>
+    <p class="subtitle">Hello, Sir Rolan</p>
+
+    <div class="cards">
+      <div class="card"><h3>Classes this week</h3><div class="big">8</div><div class="label">Scheduled sections</div></div>
+      <div class="card"><h3>Teaching hours</h3><div class="big">16.5</div><div class="label">Weekly load</div></div>
+      <div class="card"><h3>Needs attention</h3><div class="big" style="color:#e07b2a">1 room conflict</div><div class="label">Requires resolution</div></div>
+    </div>
+
+    <div class="timeline">
+      <table>
+        <thead><tr><th>Rooms</th><th>7 AM</th><th>8 AM</th><th>9 AM</th><th>10 AM</th><th>11 AM</th><th>12 PM</th><th>1 PM</th><th>2 PM</th><th>3 PM</th><th>4 PM</th><th>5 PM</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Room 206</strong></td><td></td><td></td><td></td><td></td><td><span class="tag approved">CMSC 308<br>BSCS 3A</span></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr><td><strong>MAC LAB</strong></td><td></td><td><span class="tag approved">CMSC 308<br>BSCS 3A</span></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+</body>
+</html>

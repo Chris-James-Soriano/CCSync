@@ -1,0 +1,45 @@
+{% extends "app_layout.html" %}
+{% block title %}Sections | CCSync{% endblock %}
+{% block content %}
+<h1>Sections</h1>
+<section class="card manage-form">
+  <h2>Add section</h2>
+  <form method="post" class="inline-form">
+    <input type="hidden" name="action" value="add_section">
+    <label>Section name <input name="name" type="text" placeholder="e.g. BSCS 1C" maxlength="40" required></label>
+    <label>Year
+      <select name="year" required>{% for year in (1, 2, 3, 4) %}<option>{{ year }}</option>{% endfor %}</select>
+    </label>
+    <label>Program
+      <select name="program" required>{% for program in ('BSCS', 'BSIT') %}<option>{{ program }}</option>{% endfor %}</select>
+    </label>
+    <button class="btn orange" type="submit">Add section</button>
+  </form>
+</section>
+<div class="section-list">
+  {% for section in sections %}
+  <article class="card section-card">
+    <header class="section-heading">
+      <div><h2>{{ section.name }}</h2><p>{{ section.program }} · Year {{ section.year }}</p></div>
+      <span>{{ section.subjects|length }} subjects</span>
+    </header>
+    <ul class="section-subjects">
+      {% for subject in section.subjects %}
+      <li><strong>{{ subject.code }} · {{ subject.title }}</strong><span>{{ subject.units }} units · {{ subject.delivery }} · {{ subject.room_type }} room{{ 's' if subject.room_type == 'Both' else '' }} · {{ subject.faculty_name }}{% if subject.fixed_room %} · {{ subject.fixed_room }} only{% endif %}</span></li>
+      {% else %}
+      <li>No subjects assigned yet.</li>
+      {% endfor %}
+    </ul>
+    <form method="post" class="inline-form">
+      <input type="hidden" name="section_id" value="{{ section.id }}">
+      <label>Add subject
+        <select name="subject_id" required>
+          {% for subject in subjects %}<option value="{{ subject.id }}">{{ subject.code }} · {{ subject.title }}</option>{% endfor %}
+        </select>
+      </label>
+      <button class="btn orange" type="submit">Assign subject</button>
+    </form>
+  </article>
+  {% endfor %}
+</div>
+{% endblock %}

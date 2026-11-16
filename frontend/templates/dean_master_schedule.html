@@ -1,0 +1,34 @@
+{% extends "app_layout.html" %}
+{% block title %}Master Schedule | CCSync{% endblock %}
+{% block content %}
+<h1>Master Schedule</h1>
+{% include "stat_cards.html" %}
+<div class="schedule-actions">
+  <form method="post" action="{{ url_for('dean.generate') }}" data-confirm="Generate a new schedule? This replaces ALL current schedule blocks with a fresh assignment. Existing edits will be lost." data-confirm-label="Generate" data-confirm-title="Generate schedule?">
+    <button class="btn orange" type="submit">Generate schedule automatically</button>
+  </form>
+  <form class="inline-form instructor-filter" method="get" action="{{ url_for('dean.master_schedule') }}">
+    <label>Instructor
+      <select name="instructor" aria-label="Filter schedule by instructor surname" onchange="this.form.submit()">
+        <option value=""{% if not instructor %} selected{% endif %}>All instructors</option>
+        {% for surname in instructors %}<option value="{{ surname }}"{% if surname == instructor %} selected{% endif %}>{{ surname }}</option>{% endfor %}
+      </select>
+    </label>
+    <label>Section
+      <select name="section" aria-label="Filter schedule by section" onchange="this.form.submit()">
+        <option value=""{% if not section_filter %} selected{% endif %}>All sections</option>
+        {% for s in sections %}<option value="{{ s.name }}"{% if s.name == section_filter %} selected{% endif %}>{{ s.name }}</option>{% endfor %}
+      </select>
+    </label>
+    <label>Room
+      <select name="room" aria-label="Filter schedule by room" onchange="this.form.submit()">
+        <option value=""{% if not room_filter %} selected{% endif %}>All rooms</option>
+        {% for r in all_rooms %}<option value="{{ r.name }}"{% if r.name == room_filter %} selected{% endif %}>{{ r.name }}</option>{% endfor %}
+      </select>
+    </label>
+    <noscript><button class="btn outline" type="submit">Apply</button></noscript>
+  </form>
+</div>
+{% include "weekly_schedule_grid.html" %}
+{% include "schedule_management.html" %}
+{% endblock %}

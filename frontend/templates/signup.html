@@ -1,0 +1,43 @@
+{% extends "auth_layout.html" %}
+{% block body_class %}auth signup-page{% endblock %}
+{% block hero_extra %}<span class="signup-welcome">KAMUSTA</span>{% endblock %}
+{% block auth_form %}
+<h2>Sign Up</h2>
+<h3 class="signup-subtitle">Create an Account</h3>
+{% if error %}<p class="signup-error" role="alert">{{ error }}</p>{% endif %}
+<form class="signup-form" method="post" action="{{ url_for('auth.signup') }}">
+  <div class="signup-name-fields">
+    <label>
+      <span>First name</span>
+      <input name="first_name" type="text" placeholder="Enter your first name" autocomplete="given-name">
+    </label>
+    <label>
+      <span>Last name</span>
+      <input name="last_name" type="text" placeholder="Enter your last name" autocomplete="family-name">
+    </label>
+  </div>
+
+  <label>
+    <span>Username</span>
+    <input name="username" type="text" placeholder="Choose a username" autocomplete="username">
+  </label>
+
+  <label>
+    <span>Email</span>
+    <input name="email" type="email" placeholder="name@example.com" autocomplete="email">
+  </label>
+
+  <label>
+    <span>Password</span>
+    <input name="password" type="password" placeholder="Create a password" autocomplete="new-password">
+  </label>
+
+  <label>
+    <span>Confirm password</span>
+    <input name="confirm_password" type="password" placeholder="Re-enter your password" autocomplete="new-password">
+  </label>
+
+  <button class="btn signup-submit" type="submit">Sign Up</button>
+</form>
+<p class="signup-login-prompt">Already have an account? <a href="{{ url_for('auth.login') }}">Login</a></p>
+{% endblock %}

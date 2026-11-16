@@ -1,0 +1,30 @@
+<div class="week-grid-scroll" aria-label="Weekly class schedule">
+  <div class="week-grid{% if fill %} fill{% endif %}" style="--day-count: {{ weekly.days | length }}">
+    <div class="week-time-axis">
+      <div class="week-day-heading">Time</div>
+      {% for slot in weekly.times %}<div class="week-time-label">{{ slot.label }}</div>{% endfor %}
+    </div>
+    {% for column in weekly.days %}
+    <section class="week-day" aria-label="{{ column.day }} schedule" style="--lane-count: {{ column.lane_count }}">
+      <h2 class="week-day-heading">{{ column.day }}</h2>
+      <div class="week-day-track" style="--lane-count: {{ column.lane_count }}">
+        {% for event in column.events %}
+        <article class="week-event {{ 'is-online' if event.delivery == 'Online' else '' }} {{ 'is-lab' if event.room_type == 'Laboratory' else '' }} {{ 'is-nstp' if event.is_nstp else '' }}"
+                 style="grid-column: {{ event.lane + 1 }}; grid-row: {{ event.grid_start }} / {{ event.grid_end }}"
+                 title="{{ event.course }} · {{ event.section }} · {{ event.slot }}">
+          {% if event.is_nstp %}
+            <strong>NSTP</strong>
+            <span>{{ event.section }}</span>
+            <small>7:00 AM - 5:00 PM</small>
+          {% else %}
+            <strong>{{ event.course }}</strong>
+            <span>{{ event.section }}</span>
+            <small>{{ 'Online' if event.delivery == 'Online' else event.room_type ~ ' · ' ~ event.room }}</small>
+          {% endif %}
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+    {% endfor %}
+  </div>
+</div>

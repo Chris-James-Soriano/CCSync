@@ -1,0 +1,13 @@
+:root {
+  --bg-deep: #140323;
+  --purple-900: #3d0a5c;
+  --purple-100: #f3e1ff;
+  --purple-500: #b300ff;
+  --orange-500: #ff6a00;
+  --blue-500: #0000ff;
+  --white: #ffffff;
+  --radius: 24px;
+  --font: "Inter", system-ui, sans-serif;
+  /* text for light (white) surfaces, >= 6:1 contrast */
+  --dim-on-light: #5f536a;
+}

@@ -1,0 +1,118 @@
+{% extends "app_layout.html" %}
+{% block title %}Faculty | CCSync{% endblock %}
+{% block content %}
+<h1>Faculty</h1>
+<section class="card manage-form">
+  <h2>Add faculty member</h2>
+  <form method="post" class="inline-form">
+    <input type="hidden" name="action" value="add_faculty">
+    <label>Name <input name="name" type="text" autocomplete="name" required></label>
+    <button class="btn orange" type="submit">Add faculty</button>
+  </form>
+</section>
+<div class="faculty-list">
+  {% for i in instructors %}
+    {% set load_percent = (i.weekly_hours * 100 // i.weekly_capacity) if i.weekly_capacity else 0 %}
+    <article class="card faculty-card">
+      <div class="faculty-card-heading">
+        <div>
+          <h2>{{ i.name }}</h2>
+          <p>{{ i.courses }} · {{ i.status }}</p>
+        </div>
+        <strong class="faculty-load-value">{{ i.weekly_hours }} / {{ i.weekly_capacity }} hrs</strong>
+      </div>
+      <form method="post" class="faculty-remove-form" onsubmit="return confirm('Remove this faculty member, their subjects, and related schedule blocks?')">
+        <input type="hidden" name="action" value="remove_faculty">
+        <input type="hidden" name="faculty_id" value="{{ i.id }}">
+        <button class="btn faculty-remove-button" type="submit">Remove faculty</button>
+      </form>
+      <div class="faculty-load-track"
+           role="progressbar"
+           aria-label="Weekly teaching load for {{ i.name }}"
+           aria-valuemin="0"
+           aria-valuemax="{{ i.weekly_capacity }}"
+           aria-valuenow="{{ i.weekly_hours }}">
+        <span class="faculty-load-fill {{ 'is-busy' if load_percent >= 80 else 'is-moderate' if load_percent >= 50 }}"
+              style="width: {{ [load_percent, 100]|min }}%"></span>
+      </div>
+      <p class="faculty-load-caption">{{ load_percent }}% of weekly capacity</p>
+      <details class="faculty-subjects">
+        <summary>Manage assigned subjects ({{ i.subjects|length }})</summary>
+        <div class="faculty-subject-management">
+          {% for subject in i.subjects %}
+          <article class="faculty-subject-row">
+            <form method="post" class="inline-form subject-edit-form">
+              <input type="hidden" name="action" value="update_subject">
+              <input type="hidden" name="subject_id" value="{{ subject.id }}">
+              <label>Faculty
+                <select name="faculty_id" required>
+                  {% for faculty in all_faculty %}<option value="{{ faculty.id }}" {{ 'selected' if faculty.id == i.id }}>{{ faculty.name }}</option>{% endfor %}
+                </select>
+              </label>
+              <label>Code <input name="code" type="text" value="{{ subject.code }}" required></label>
+              <label>Title <input name="title" type="text" value="{{ subject.title }}" required></label>
+              <label>Units
+                <select name="units" required>
+                  {% for units in (2, 3, 5) %}<option value="{{ units }}" {{ 'selected' if units == subject.units }}>{{ units }}</option>{% endfor %}
+                </select>
+              </label>
+              <label>Room type
+                <select name="room_type" required>
+                  {% for room_type in ('Lecture', 'Laboratory', 'Both') %}<option {{ 'selected' if room_type == subject.room_type }}>{{ room_type }}</option>{% endfor %}
+                </select>
+              </label>
+              <label>Delivery
+                <select name="delivery" required>
+                  {% for delivery in ('In-person', 'Online') %}<option {{ 'selected' if delivery == subject.delivery }}>{{ delivery }}</option>{% endfor %}
+                </select>
+              </label>
+              <label>Fixed room
+                <select name="room_id">
+                  <option value="">Any matching room</option>
+                  {% for room in all_rooms %}<option value="{{ room.id }}" {{ 'selected' if room.id == subject.room_id }}>{{ room.name }} ({{ room.type }})</option>{% endfor %}
+                </select>
+              </label>
+              <button class="btn orange" type="submit">Save subject</button>
+            </form>
+            <form method="post" class="subject-remove-form" onsubmit="return confirm('Remove {{ subject.code }} and its scheduled blocks?')">
+              <input type="hidden" name="action" value="remove_subject">
+              <input type="hidden" name="subject_id" value="{{ subject.id }}">
+              <button class="btn faculty-remove-button" type="submit" aria-label="Remove {{ subject.code }}">Remove subject</button>
+            </form>
+          </article>
+          {% else %}
+          <p class="empty-state">No subjects assigned.</p>
+          {% endfor %}
+        </div>
+      </details>
+      <details class="faculty-subjects">
+        <summary>Add a subject</summary>
+        <form method="post" class="inline-form">
+          <input type="hidden" name="action" value="add_subject">
+          <input type="hidden" name="faculty_id" value="{{ i.id }}">
+          <label>Code <input name="code" type="text" placeholder="CMSC 401" required></label>
+          <label>Title <input name="title" type="text" placeholder="Advanced Computing" required></label>
+          <label>Units
+            <select name="units" required><option value="2">2</option><option value="3">3</option><option value="5">5</option></select>
+          </label>
+          <label>Room type
+            <select name="room_type" required>
+              <option>Lecture</option><option>Laboratory</option><option>Both</option>
+            </select>
+          </label>
+          <label>Delivery
+            <select name="delivery" required><option>In-person</option><option>Online</option></select>
+          </label>
+          <label>Fixed room
+            <select name="room_id">
+              <option value="">Any matching room</option>
+              {% for room in all_rooms %}<option value="{{ room.id }}">{{ room.name }} ({{ room.type }})</option>{% endfor %}
+            </select>
+          </label>
+          <button class="btn orange" type="submit">Add subject</button>
+        </form>
+      </details>
+    </article>
+  {% endfor %}
+</div>
+{% endblock %}

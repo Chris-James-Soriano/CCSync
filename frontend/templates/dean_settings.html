@@ -1,0 +1,54 @@
+{% extends "app_layout.html" %}
+{% block title %}Settings | CCSync{% endblock %}
+{% block content %}
+<h1>Settings</h1>
+
+<div class="settings-grid">
+  <section class="card settings-card settings-master" aria-labelledby="settings-master-title">
+    <h2 id="settings-master-title">Master schedule</h2>
+    <p class="settings-help">
+      Downloads everything stored in CCSync — the master schedule, faculty, subjects, sections,
+      rooms, and which subjects are assigned to which sections — as one <strong>.xlsx</strong> file.
+      User accounts and passwords are never included.
+    </p>
+    <div class="import-actions">
+      <a class="btn orange" href="{{ url_for('dean.backup_download') }}">Download</a>
+    </div>
+  </section>
+
+  <section class="card settings-card settings-danger settings-delete" aria-labelledby="settings-danger-title">
+    <h2 id="settings-danger-title">Delete schedule</h2>
+    <p class="settings-help">
+      Permanently deletes every scheduled class block in the master schedule.
+      Subjects, sections, faculty, rooms, section assignments, and your account are
+      all kept. Use “Generate schedule automatically” on the Master Schedule tab to
+      build it again. This cannot be undone.
+    </p>
+    <form method="post" action="{{ url_for('dean.delete_schedule') }}"
+          data-confirm="This permanently deletes ALL scheduled class blocks. Subjects, sections, faculty, rooms, section assignments, and accounts are kept. This cannot be undone."
+          data-confirm-label="Delete schedule"
+          data-confirm-title="Delete schedule?">
+      <button class="btn danger" type="submit">Delete schedule</button>
+    </form>
+  </section>
+
+  <section class="card settings-card settings-import" aria-labelledby="settings-import-title">
+    <h2 id="settings-import-title">Import schedule</h2>
+    <p class="settings-help">
+      Imports a backup file downloaded from this page and replaces the current data with its
+      contents: the schedule, faculty, subjects, sections, rooms, and section assignments are all
+      overwritten. Your user account stays. If the file is invalid, nothing is changed.
+    </p>
+    <form method="post" action="{{ url_for('dean.backup_restore') }}" enctype="multipart/form-data" class="import-form">
+      <label class="import-file-label">Import file
+        <input type="file" name="file" accept=".xlsx" required>
+      </label>
+      <button class="btn orange" type="submit"
+              data-confirm="Importing this file REPLACES everything currently stored — schedule, faculty, subjects, sections, and rooms. This cannot be undone."
+              data-confirm-label="Import"
+              data-confirm-title="Import schedule?">Import</button>
+    </form>
+    <p class="import-note">Use a backup file downloaded from the Master schedule panel. Importing replaces all current data; user accounts are kept, so you stay signed in.</p>
+  </section>
+</div>
+{% endblock %}

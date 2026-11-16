@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block head %}<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">{% endblock %}
+{% block body_class %}auth{% endblock %}
+{% block body %}
+<section class="hero">
+  {% block hero_extra %}{% endblock %}
+  <h1>
+    <span>Manage Syncing</span>
+    <span>Your <span class="hero-rotator" aria-label="College, Class, Schedule, CCSync.">
+      <span class="orange hero-word-college" aria-hidden="true">College</span>
+      <span class="purple hero-word-class" aria-hidden="true">Class</span>
+      <span class="purple hero-word-schedule" aria-hidden="true">Schedule</span>
+      <span class="hero-word-ccsync" aria-hidden="true"><span class="orange">CC</span><span class="purple">S</span>ync<span class="orange">.</span></span>
+    </span></span>
+  </h1>
+  <div class="hero-showcase" aria-label="CCSync system preview">
+    <div class="hero-showcase-track">
+      <figure class="hero-showcase-slide">
+           <img src="{{ url_for('static', filename='images/design-reference/Admin _ Master Schedule.png') }}"
+             alt="Dean weekly master schedule with class and room assignments" loading="lazy">
+           <figcaption>Dean master schedule</figcaption>
+      </figure>
+      <figure class="hero-showcase-slide">
+        <img src="{{ url_for('static', filename='images/design-reference/Faculty _ Create Schedule.png') }}"
+             alt="Schedule creation screen with a room timeline and class details" loading="lazy">
+        <figcaption>Schedule creation</figcaption>
+      </figure>
+      <figure class="hero-showcase-slide">
+        <img src="{{ url_for('static', filename='images/design-reference/Admin _ Export.png') }}"
+             alt="Schedule export screen with file format and schedule options" loading="lazy">
+        <figcaption>Schedule exporting</figcaption>
+      </figure>
+      <figure class="hero-showcase-slide" aria-hidden="true">
+        <img src="{{ url_for('static', filename='images/design-reference/Admin _ Master Schedule.png') }}" alt="" loading="lazy">
+        <figcaption>Dean master schedule</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+<section class="panel">
+  <div class="logo"><span class="c1">CC</span><span class="c2">S</span><span class="y">ync</span><span class="dot">.</span></div>
+  <div class="glass">{% block auth_form %}{% endblock %}</div>
+</section>
+{% endblock %}
